@@ -60,7 +60,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   const isbn_num = req.params.isbn
   const user_name= req.body.usernamee
   let user_review = req.body.review
-  books[isbn_num].reviews = {...reviews,user_name:user_review}
+  books[isbn_num].reviews[user_name] = user_review
 });
 
 //push to books[ISBN].review
