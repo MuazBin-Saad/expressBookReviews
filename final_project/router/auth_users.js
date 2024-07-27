@@ -57,11 +57,15 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  const isbn_num = req.params.isbn
-  const user_name= req.body.usernamee
+  const isbn_num = parseInt(req.params.isbn)
+  const Nameofuser= req.body.username
   let user_review = req.body.review
-  books[isbn_num].reviews[user_name] = user_review
-});
+  if (books[bookId]) {
+    books[isbn_num].reviews[Nameofuser] = user_review
+} else {
+    console.log("Book not found.");
+  
+}});
 
 //push to books[ISBN].review
 
