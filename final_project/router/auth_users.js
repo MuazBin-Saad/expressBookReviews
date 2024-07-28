@@ -57,19 +57,46 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  const isbn_num = parseInt(req.params.isbn)
-  const Nameofuser= req.body.username
-  let user_review = req.body.review
-  if (books[bookId]) {
-    books[isbn_num].reviews[Nameofuser] = user_review
-} else {
-    console.log("Book not found.");
-  
-}});
+    const isbn_num = parseInt(req.params.isbn);
+    const username = req.session.authorization.username
+    const review = req.body.review;
 
-//push to books[ISBN].review
+    // Check if the book exists
+    if (!books[isbn_num]) {
+        return res.status(404).json({ error: "Book not found" });
+    }
+
+    // Check if username and review are provided
+    if (!username || !review) {
+        return res.status(400).json({ error: "Username and review are required" });
+    }
+
+    // Add the review
+    books[isbn_num].reviews[username] = review;
+
+    // Respond with the updated book reviews
+    res.status(200).json(books[isbn_num].reviews);
+});
 
 regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn_num = parseInt(req.params.isbn);
+    const username = req.session.authorization.username
+
+    // Check if the book exists
+    if (!books[isbn_num]) {
+        return res.status(404).json({ error: "Book not found" });
+    }
+
+    // Check if the review by the specified user exists
+    if (!books[isbn_num].reviews[username]) {
+        return res.status(404).json({ error: "Review by this user not found" });
+    }
+
+    // Delete the review
+    delete books[isbn_num].reviews[username];
+
+    // Respond with the updated book reviews
+    res.status(200).json(books[isbn_num].reviews);
 });
 
 module.exports.authenticated = regd_users;
